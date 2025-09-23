@@ -38,26 +38,67 @@ public class MainActivity extends Activity {
     private static final String NGROK_URL = "https://324d8d0f97a9.ngrok-free.app";
     private static final String DEVELOPMENT_URL = NETWORK_URL; // Change this to switch between environments
 
-    // Request all necessary permissions for Snap Cart
+    // Request all necessary permissions for social media shopping app
     private void requestAllPermissions() {
         String[] permissions = {
+            // Core permissions
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            
+            // Social media permissions
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS,
+            Manifest.permission.GET_ACCOUNTS,
+            
+            // Calendar permissions
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.WRITE_CALENDAR,
+            
+            // SMS and phone permissions
+            Manifest.permission.READ_SMS,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CALL_PHONE,
+            
+            // System permissions
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
         };
         
-        // Add notification permission for Android 13+
+        // Add Android version-specific permissions
+        java.util.List<String> permissionList = new java.util.ArrayList<>(java.util.Arrays.asList(permissions));
+        
+        // Android 13+ permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            String[] newPermissions = new String[permissions.length + 1];
-            System.arraycopy(permissions, 0, newPermissions, 0, permissions.length);
-            newPermissions[permissions.length] = Manifest.permission.POST_NOTIFICATIONS;
-            permissions = newPermissions;
+            permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
+            permissionList.add(Manifest.permission.READ_MEDIA_IMAGES);
+            permissionList.add(Manifest.permission.READ_MEDIA_VIDEO);
+            permissionList.add(Manifest.permission.READ_MEDIA_AUDIO);
         }
         
-        ActivityCompat.requestPermissions(this, permissions, MULTIPLE_PERMISSIONS_CODE);
+        // Android 12+ permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+            permissionList.add(Manifest.permission.BLUETOOTH_SCAN);
+            permissionList.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
+        }
+        
+        // Android 11+ permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            permissionList.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+        }
+        
+        // Android 10+ permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            permissionList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+        
+        String[] finalPermissions = permissionList.toArray(new String[0]);
+        ActivityCompat.requestPermissions(this, finalPermissions, MULTIPLE_PERMISSIONS_CODE);
     }
     
     // Check if all essential permissions are granted
@@ -65,7 +106,9 @@ public class MainActivity extends Activity {
         String[] essentialPermissions = {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_EXTERNAL_STORAGE
         };
         
         for (String permission : essentialPermissions) {
@@ -76,32 +119,41 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    // Adjust WebView settings based on screen size and density
-    private void adjustWebViewForScreenSize() {
-        android.util.DisplayMetrics displayMetrics = new android.util.DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        
-        int screenWidthDp = (int) (displayMetrics.widthPixels / displayMetrics.density);
-        int screenHeightDp = (int) (displayMetrics.heightPixels / displayMetrics.density);
-        
-        // Log screen info for debugging
-        android.util.Log.d("SnapCart", "Screen: " + screenWidthDp + "x" + screenHeightDp + "dp, density: " + displayMetrics.density);
-        
-        // Adjust initial scale based on screen size
-        float initialScale = 1.0f;
-        if (screenWidthDp < 360) {
-            // Very small screens (< 360dp width)
-            initialScale = 1.0f;
-        } else if (screenWidthDp < 480) {
-            // Small screens (360-480dp width)
-            initialScale = 1.0f;
-        } else {
-            // Normal and larger screens
-            initialScale = 1.0f;
+    // Check for special permissions that require different handling
+    private void checkSpecialPermissions() {
+        // Check for overlay permission (SYSTEM_ALERT_WINDOW)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!android.provider.Settings.canDrawOverlays(this)) {
+                android.content.Intent intent = new android.content.Intent(
+                    android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    android.net.Uri.parse("package:" + getPackageName())
+                );
+                startActivityForResult(intent, 123);
+            }
         }
         
-        // Don't set initial scale - let the website handle it naturally
-        // mWebView.setInitialScale((int) (initialScale * 100));
+        // Check for battery optimization exemption
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            android.os.PowerManager powerManager = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
+                android.content.Intent intent = new android.content.Intent(
+                    android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                );
+                intent.setData(android.net.Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+            }
+        }
+        
+        // Check for exact alarm permission (Android 12+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            android.app.AlarmManager alarmManager = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (!alarmManager.canScheduleExactAlarms()) {
+                android.content.Intent intent = new android.content.Intent(
+                    android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                );
+                startActivity(intent);
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -111,10 +163,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        // Request all permissions needed for Snap Cart
+        // Request all permissions needed for social media shopping app
         if (!hasAllPermissions()) {
             requestAllPermissions();
         }
+        
+        // Check special permissions that require different handling
+        checkSpecialPermissions();
         
         setupWebView();
         
@@ -127,9 +182,6 @@ public class MainActivity extends Activity {
         mWebView = findViewById(R.id.activity_main_webview);
         WebSettings webSettings = mWebView.getSettings();
         
-        // Adjust WebView based on screen density
-        adjustWebViewForScreenSize();
-        
         // Enable JavaScript and DOM storage
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -141,18 +193,12 @@ public class MainActivity extends Activity {
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         
-        // Viewport and zoom settings - mobile-friendly
-        webSettings.setUseWideViewPort(true);
+        // Viewport and zoom settings
         webSettings.setLoadWithOverviewMode(true);
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
-        
-        // Allow limited zoom but hide controls
+        webSettings.setUseWideViewPort(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         webSettings.setSupportZoom(true);
-        
-        // Set mobile-friendly zoom
-        webSettings.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
         
         // Text and media settings
         webSettings.setDefaultTextEncodingName("utf-8");
@@ -168,21 +214,8 @@ public class MainActivity extends Activity {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         
-        // Set mobile user agent to ensure mobile version is loaded
-        String mobileUserAgent = "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36 SnapCart/1.0";
-        webSettings.setUserAgentString(mobileUserAgent);
-        
-        // Additional viewport and density settings
-        webSettings.setMinimumFontSize(8); // Prevent text from being too small
-        webSettings.setMinimumLogicalFontSize(8);
-        webSettings.setDefaultFontSize(16);
-        webSettings.setDefaultFixedFontSize(13);
-        
-        // Force density settings for better scaling
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // Force hardware acceleration
-            mWebView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-        }
+        // User agent for better compatibility
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " SnapCart/1.0");
         
         // Cache settings for better performance
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -225,56 +258,12 @@ public class MainActivity extends Activity {
         }
         
         @Override
-        public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
-            super.onPageStarted(view, url, favicon);
-            
-            // Only inject viewport if missing, but keep mobile-friendly settings
-            String viewportScript = 
-                "javascript:(function() {" +
-                "    var viewport = document.querySelector('meta[name=viewport]');" +
-                "    if (!viewport) {" +
-                "        viewport = document.createElement('meta');" +
-                "        viewport.name = 'viewport';" +
-                "        viewport.content = 'width=device-width, initial-scale=1.0';" +
-                "        document.head.appendChild(viewport);" +
-                "    }" +
-                "    var snapCartStyle = document.getElementById('snapcart-mobile-fix');" +
-                "    if (!snapCartStyle) {" +
-                "        var style = document.createElement('style');" +
-                "        style.id = 'snapcart-mobile-fix';" +
-                "        style.innerHTML = '" +
-                "            html { -webkit-text-size-adjust: 100%; }" +
-                "            body { min-width: 320px; }" +
-                "        ';" +
-                "        document.head.appendChild(style);" +
-                "    }" +
-                "})()";
-            
-            view.loadUrl(viewportScript);
-        }
-        
-        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            
             // Ensure cookies are saved
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().flush();
             }
-            
-            // Minimal responsive fixes only if needed
-            String responsiveScript = 
-                "javascript:(function() {" +
-                "    if (window.innerWidth <= 768) {" +
-                "        var style = document.createElement('style');" +
-                "        style.innerHTML = '" +
-                "            img { max-width: 100% !important; height: auto !important; }" +
-                "        ';" +
-                "        document.head.appendChild(style);" +
-                "    }" +
-                "})()";
-            
-            view.loadUrl(responsiveScript);
         }
     }
 
@@ -374,18 +363,33 @@ public class MainActivity extends Activity {
         
         switch (requestCode) {
             case MULTIPLE_PERMISSIONS_CODE:
-                boolean allPermissionsGranted = true;
-                for (int result : grantResults) {
-                    if (result != PackageManager.PERMISSION_GRANTED) {
-                        allPermissionsGranted = false;
-                        break;
+                int grantedCount = 0;
+                int deniedCount = 0;
+                java.util.List<String> deniedPermissions = new java.util.ArrayList<>();
+                
+                for (int i = 0; i < permissions.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        grantedCount++;
+                    } else {
+                        deniedCount++;
+                        deniedPermissions.add(permissions[i]);
                     }
                 }
                 
-                if (allPermissionsGranted) {
-                    Toast.makeText(this, "All permissions granted for Snap Cart!", Toast.LENGTH_SHORT).show();
+                if (deniedCount == 0) {
+                    Toast.makeText(this, "🎉 All permissions granted! Snap Cart is ready to go!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Some permissions denied. App may not work fully.", Toast.LENGTH_LONG).show();
+                    String message = String.format(
+                        "📊 Permissions: %d granted, %d denied\n" +
+                        "⚠️ Some features may be limited without all permissions.",
+                        grantedCount, deniedCount
+                    );
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                    
+                    // Show which permissions were denied for debugging
+                    if (deniedPermissions.size() > 0) {
+                        android.util.Log.w("SnapCart", "Denied permissions: " + deniedPermissions.toString());
+                    }
                 }
                 break;
         }

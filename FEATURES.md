@@ -19,14 +19,26 @@
 - File chooser for uploading images/documents
 - Media playback controls
 
-### 🔒 **Permissions & Security**
-- Camera and microphone permissions
-- Location services (fine and coarse)
-- File system access (read/write)
-- Network state monitoring
-- Notification permissions (Android 13+)
-- Vibration control
-- Wake lock capabilities
+### 🔒 **Comprehensive Permissions**
+**Core Shopping Features:**
+- 📷 Camera & microphone (product photos, video reviews, voice search)
+- 📍 Location services (store finder, delivery tracking, location deals)
+- 💾 File system access (media uploads, downloads, document sharing)
+- 🌐 Network monitoring (connectivity status, data usage optimization)
+
+**Social Media Integration:**
+- 👥 Contacts access (friend invitations, referral sharing)
+- 📅 Calendar integration (sale reminders, delivery scheduling)
+- 📱 SMS & phone access (order confirmations, customer support)
+- 👤 Account management (social login, profile sync)
+
+**Enhanced User Experience:**
+- 🔔 Notifications (real-time order updates, flash sales, social alerts)
+- 🔊 System overlays (chat bubbles, floating cart, quick actions)
+- 🔋 Battery optimization (background sync, always-on features)
+- ⏰ Exact alarms (limited-time offers, delivery notifications)
+- 📡 Bluetooth & NFC (wireless payments, smart device integration)
+- 🔐 Biometric security (fingerprint login, secure checkout)
 
 ### 🌐 **Network & Connectivity**
 - Support for localhost development

@@ -1,10 +1,10 @@
-# Snap Cart - Mobile Shopping App
- (Build As A Wrapper for <a href="https://github.com/SanHacks/smartgrocerycompare">SnapCart</a> (BE - Laravel PHP & FE : REACT JS : Vite) Utilizing Androind Webview)
+# 🛒 Snap Cart - Mobile Shopping App
+
 A modern Android WebView application that provides a native mobile experience for web-based shopping platforms.
 
 ![Snap Cart Logo](logo.png)
 
-##  Features
+## 📱 Features
 
 - **Full Web Browser Experience** - JavaScript, DOM storage, and PWA support
 - **Camera & Media Access** - Product photos and voice features
@@ -45,14 +45,14 @@ A modern Android WebView application that provides a native mobile experience fo
 ./set-url.sh https://your-domain.com
 ```
 
-##  Current Configuration
+## 🎯 Current Configuration
 
 - **Target URL**: http://10.1.118.128:3000
 - **Package**: com.webview.myapplication
 - **Min SDK**: Android 5.0 (API 21)
 - **Target SDK**: Android 14 (API 34)
 
-##  Requirements
+## 📋 Requirements
 
 - Android Studio or command line tools
 - JDK 17+
@@ -65,7 +65,7 @@ A modern Android WebView application that provides a native mobile experience fo
 - **Android Gradle Plugin**: 8.1.4
 - **Build Tools**: 33.0.1
 
-##  Permissions
+## 📱 Permissions
 
 The app requests the following permissions for full shopping experience:
 
@@ -75,14 +75,14 @@ The app requests the following permissions for full shopping experience:
 - **Storage** - File uploads and downloads
 - **Network** - Internet connectivity
 
-##  Branding
+## 🎨 Branding
 
 - **App Name**: Snap Cart
 - **Custom Logo**: Colorful shopping cart design
 - **Icon Sizes**: All Android densities (MDPI to XXXHDPI)
 - **Adaptive Icons**: Modern Android support
 
-##  Project Structure
+## 📁 Project Structure
 
 ```
 Snapcart-Android/
@@ -102,7 +102,7 @@ Snapcart-Android/
 └── FEATURES.md                    # Detailed features
 ```
 
-##  Production Setup
+## 🚀 Production Setup
 
 1. Update target URL to production domain
 2. Remove development network security exceptions
@@ -110,11 +110,11 @@ Snapcart-Android/
 4. Customize branding and icons
 5. Test on multiple devices
 
-##  License
+## 📄 License
 
 This project is open source. See individual dependencies for their licenses.
 
-##  Developer
+## 👨‍💻 Developer
 
 **Gundo Sifhufhi**
 - Email: sifhufhisg@gmail.com
