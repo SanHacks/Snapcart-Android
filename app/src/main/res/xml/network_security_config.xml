@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Development configuration - allows all HTTPS traffic -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Allow localhost for local development -->
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        
+        <!-- Allow local network IP addresses -->
+        <domain includeSubdomains="true">10.1.118.128</domain>
+        <domain includeSubdomains="true">192.168.1.0/24</domain>
+        <domain includeSubdomains="true">192.168.0.0/24</domain>
+        <domain includeSubdomains="true">10.0.0.0/8</domain>
+        
+        <!-- Allow all ngrok domains for testing -->
+        <domain includeSubdomains="true">ngrok.io</domain>
+        <domain includeSubdomains="true">ngrok-free.app</domain>
+        <domain includeSubdomains="true">ngrok.app</domain>
+        <domain includeSubdomains="true">tunnel.pyngrok.com</domain>
+    </domain-config>
+    
+    <!-- Production configuration - remove this section and use base-config for production -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>
