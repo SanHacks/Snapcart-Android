@@ -100,8 +100,8 @@ public class MainActivity extends Activity {
             initialScale = 1.0f;
         }
         
-        // Apply initial scale
-        mWebView.setInitialScale((int) (initialScale * 100));
+        // Don't set initial scale - let the website handle it naturally
+        // mWebView.setInitialScale((int) (initialScale * 100));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -141,21 +141,18 @@ public class MainActivity extends Activity {
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         
-        // Viewport and zoom settings - optimized for mobile responsiveness
+        // Viewport and zoom settings - mobile-friendly
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
         
-        // Disable zoom to prevent scaling issues
-        webSettings.setBuiltInZoomControls(false);
+        // Allow limited zoom but hide controls
+        webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setSupportZoom(false);
+        webSettings.setSupportZoom(true);
         
-        // Set initial and default zoom scales
+        // Set mobile-friendly zoom
         webSettings.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
-        
-        // Force viewport meta tag support
-        webSettings.setLoadWithOverviewMode(false); // This helps with responsive design
         
         // Text and media settings
         webSettings.setDefaultTextEncodingName("utf-8");
@@ -171,8 +168,9 @@ public class MainActivity extends Activity {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         
-        // User agent for better compatibility
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " SnapCart/1.0");
+        // Set mobile user agent to ensure mobile version is loaded
+        String mobileUserAgent = "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36 SnapCart/1.0";
+        webSettings.setUserAgentString(mobileUserAgent);
         
         // Additional viewport and density settings
         webSettings.setMinimumFontSize(8); // Prevent text from being too small
@@ -230,17 +228,15 @@ public class MainActivity extends Activity {
         public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             
-            // Inject viewport meta tag if not present to ensure proper mobile scaling
+            // Only inject viewport if missing, but keep mobile-friendly settings
             String viewportScript = 
                 "javascript:(function() {" +
                 "    var viewport = document.querySelector('meta[name=viewport]');" +
                 "    if (!viewport) {" +
                 "        viewport = document.createElement('meta');" +
                 "        viewport.name = 'viewport';" +
-                "        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no';" +
+                "        viewport.content = 'width=device-width, initial-scale=1.0';" +
                 "        document.head.appendChild(viewport);" +
-                "    } else {" +
-                "        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no';" +
                 "    }" +
                 "    var snapCartStyle = document.getElementById('snapcart-mobile-fix');" +
                 "    if (!snapCartStyle) {" +
@@ -248,8 +244,7 @@ public class MainActivity extends Activity {
                 "        style.id = 'snapcart-mobile-fix';" +
                 "        style.innerHTML = '" +
                 "            html { -webkit-text-size-adjust: 100%; }" +
-                "            body { margin: 0; padding: 0; min-width: 320px; }" +
-                "            * { box-sizing: border-box; }" +
+                "            body { min-width: 320px; }" +
                 "        ';" +
                 "        document.head.appendChild(style);" +
                 "    }" +
@@ -267,19 +262,16 @@ public class MainActivity extends Activity {
                 CookieManager.getInstance().flush();
             }
             
-            // Additional responsive design fixes
+            // Minimal responsive fixes only if needed
             String responsiveScript = 
                 "javascript:(function() {" +
-                "    var style = document.createElement('style');" +
-                "    style.innerHTML = '" +
-                "        @media screen and (max-width: 768px) {" +
-                "            body { transform-origin: top left; }" +
-                "            .container, .main-content { max-width: 100% !important; }" +
+                "    if (window.innerWidth <= 768) {" +
+                "        var style = document.createElement('style');" +
+                "        style.innerHTML = '" +
                 "            img { max-width: 100% !important; height: auto !important; }" +
-                "            table { width: 100% !important; }" +
-                "        }" +
-                "    ';" +
-                "    document.head.appendChild(style);" +
+                "        ';" +
+                "        document.head.appendChild(style);" +
+                "    }" +
                 "})()";
             
             view.loadUrl(responsiveScript);
