@@ -1,5 +1,5 @@
-# Snap Cart - Mobile Shopping App (Build As A Wrapper for https://github.com/SanHacks/smartgrocerycompare (BE - Laravel PHP & FE : REACT JS : Vite
-
+# Snap Cart - Mobile Shopping App
+ (Build As A Wrapper for https://github.com/SanHacks/smartgrocerycompare (BE - Laravel PHP & FE : REACT JS : Vite)
 A modern Android WebView application that provides a native mobile experience for web-based shopping platforms.
 
 ![Snap Cart Logo](logo.png)
