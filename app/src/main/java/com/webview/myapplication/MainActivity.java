@@ -75,6 +75,34 @@ public class MainActivity extends Activity {
         }
         return true;
     }
+    
+    // Adjust WebView settings based on screen size and density
+    private void adjustWebViewForScreenSize() {
+        android.util.DisplayMetrics displayMetrics = new android.util.DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        
+        int screenWidthDp = (int) (displayMetrics.widthPixels / displayMetrics.density);
+        int screenHeightDp = (int) (displayMetrics.heightPixels / displayMetrics.density);
+        
+        // Log screen info for debugging
+        android.util.Log.d("SnapCart", "Screen: " + screenWidthDp + "x" + screenHeightDp + "dp, density: " + displayMetrics.density);
+        
+        // Adjust initial scale based on screen size
+        float initialScale = 1.0f;
+        if (screenWidthDp < 360) {
+            // Very small screens (< 360dp width)
+            initialScale = 1.0f;
+        } else if (screenWidthDp < 480) {
+            // Small screens (360-480dp width)
+            initialScale = 1.0f;
+        } else {
+            // Normal and larger screens
+            initialScale = 1.0f;
+        }
+        
+        // Apply initial scale
+        mWebView.setInitialScale((int) (initialScale * 100));
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -99,6 +127,9 @@ public class MainActivity extends Activity {
         mWebView = findViewById(R.id.activity_main_webview);
         WebSettings webSettings = mWebView.getSettings();
         
+        // Adjust WebView based on screen density
+        adjustWebViewForScreenSize();
+        
         // Enable JavaScript and DOM storage
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -110,12 +141,21 @@ public class MainActivity extends Activity {
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         
-        // Viewport and zoom settings
-        webSettings.setLoadWithOverviewMode(true);
+        // Viewport and zoom settings - optimized for mobile responsiveness
         webSettings.setUseWideViewPort(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        
+        // Disable zoom to prevent scaling issues
+        webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setSupportZoom(true);
+        webSettings.setSupportZoom(false);
+        
+        // Set initial and default zoom scales
+        webSettings.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
+        
+        // Force viewport meta tag support
+        webSettings.setLoadWithOverviewMode(false); // This helps with responsive design
         
         // Text and media settings
         webSettings.setDefaultTextEncodingName("utf-8");
@@ -133,6 +173,18 @@ public class MainActivity extends Activity {
         
         // User agent for better compatibility
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " SnapCart/1.0");
+        
+        // Additional viewport and density settings
+        webSettings.setMinimumFontSize(8); // Prevent text from being too small
+        webSettings.setMinimumLogicalFontSize(8);
+        webSettings.setDefaultFontSize(16);
+        webSettings.setDefaultFixedFontSize(13);
+        
+        // Force density settings for better scaling
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Force hardware acceleration
+            mWebView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
+        }
         
         // Cache settings for better performance
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -175,12 +227,62 @@ public class MainActivity extends Activity {
         }
         
         @Override
+        public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            
+            // Inject viewport meta tag if not present to ensure proper mobile scaling
+            String viewportScript = 
+                "javascript:(function() {" +
+                "    var viewport = document.querySelector('meta[name=viewport]');" +
+                "    if (!viewport) {" +
+                "        viewport = document.createElement('meta');" +
+                "        viewport.name = 'viewport';" +
+                "        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no';" +
+                "        document.head.appendChild(viewport);" +
+                "    } else {" +
+                "        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no';" +
+                "    }" +
+                "    var snapCartStyle = document.getElementById('snapcart-mobile-fix');" +
+                "    if (!snapCartStyle) {" +
+                "        var style = document.createElement('style');" +
+                "        style.id = 'snapcart-mobile-fix';" +
+                "        style.innerHTML = '" +
+                "            html { -webkit-text-size-adjust: 100%; }" +
+                "            body { margin: 0; padding: 0; min-width: 320px; }" +
+                "            * { box-sizing: border-box; }" +
+                "        ';" +
+                "        document.head.appendChild(style);" +
+                "    }" +
+                "})()";
+            
+            view.loadUrl(viewportScript);
+        }
+        
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            
             // Ensure cookies are saved
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().flush();
             }
+            
+            // Additional responsive design fixes
+            String responsiveScript = 
+                "javascript:(function() {" +
+                "    var style = document.createElement('style');" +
+                "    style.innerHTML = '" +
+                "        @media screen and (max-width: 768px) {" +
+                "            body { transform-origin: top left; }" +
+                "            .container, .main-content { max-width: 100% !important; }" +
+                "            img { max-width: 100% !important; height: auto !important; }" +
+                "            table { width: 100% !important; }" +
+                "        }" +
+                "    ';" +
+                "    document.head.appendChild(style);" +
+                "})()";
+            
+            view.loadUrl(responsiveScript);
         }
     }
 
