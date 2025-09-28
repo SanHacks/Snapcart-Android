@@ -6,7 +6,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.webview.myapplication"
+        applicationId "com.sanbytez.snapcart"
         minSdk 21
         targetSdk 34
         versionCode 1
@@ -27,7 +27,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     
-    namespace 'com.webview.myapplication'
+    namespace 'com.sanbytez.snapcart'
 }
 
 dependencies {

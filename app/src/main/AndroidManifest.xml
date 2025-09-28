@@ -186,7 +186,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
     <activity
-        android:name="com.webview.myapplication.MainActivity"
+        android:name="com.sanbytez.snapcart.MainActivity"
         android:configChanges="orientation|screenSize"
         android:exported="true">
         <intent-filter>
@@ -196,7 +196,7 @@
     </activity>
     
     <!-- Widget Providers -->
-    <receiver android:name="com.webview.myapplication.ShoppingListWidget"
+    <receiver android:name="com.sanbytez.snapcart.ShoppingListWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -205,7 +205,7 @@
             android:resource="@xml/shopping_list_widget_info" />
     </receiver>
     
-    <receiver android:name="com.webview.myapplication.DealsWidget"
+    <receiver android:name="com.sanbytez.snapcart.DealsWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -214,7 +214,7 @@
             android:resource="@xml/deals_widget_info" />
     </receiver>
     
-    <receiver android:name="com.webview.myapplication.CartStatusWidget"
+    <receiver android:name="com.sanbytez.snapcart.CartStatusWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -223,7 +223,7 @@
             android:resource="@xml/cart_status_widget_info" />
     </receiver>
     
-    <receiver android:name="com.webview.myapplication.BarcodeScannerWidget"
+    <receiver android:name="com.sanbytez.snapcart.BarcodeScannerWidget"
         android:exported="true">
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

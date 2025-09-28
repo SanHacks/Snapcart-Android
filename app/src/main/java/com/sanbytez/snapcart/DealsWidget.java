@@ -1,4 +1,4 @@
-package com.webview.myapplication;
+package com.sanbytez.snapcart;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

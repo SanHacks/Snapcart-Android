@@ -1,4 +1,4 @@
-package com.webview.myapplication;
+package com.sanbytez.snapcart;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
     private TextView loadingText;
     private TextView connectionStatusText;
     private ImageView connectionStatusIcon;
+    private ImageView loadingIcon;
     
     // Development URLs - easily change these for different testing environments
     private static final String LOCALHOST_URL = "http://localhost:3000";
@@ -47,6 +48,167 @@ public class MainActivity extends Activity {
     private static final String NGROK_URL = "https://324d8d0f97a9.ngrok-free.app";
     private static final String PRODUCTION_URL = "https://snapcartza.co.za";
     private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Production URL for SnapCart ZA
+    
+    // 100+ Randomized Loading Messages - Grocery Comparison Theme
+    private static final String[] LOADING_MESSAGES = {
+        // SnapCart Brand Messages
+        "Welcome to SnapCart - where grocery comparison begins",
+        "SnapCart is scanning the best grocery deals",
+        "Connecting to SnapCart's price comparison engine",
+        "SnapCart is preparing your personalized shopping experience",
+        "Loading SnapCart's smart grocery comparison tools",
+        
+        // Grocery Comparison Core Messages
+        "Comparing grocery prices across multiple stores",
+        "Finding the best deals on your favorite products",
+        "Scanning thousands of grocery items for price matches",
+        "Analyzing grocery prices to save you money",
+        "Searching for the lowest grocery prices in your area",
+        "Comparing fresh produce prices from local stores",
+        "Finding bulk buying opportunities to maximize savings",
+        "Checking seasonal discounts on grocery items",
+        "Locating store-specific promotions and deals",
+        "Matching coupons with current grocery prices",
+        
+        // Shopping Experience Messages
+        "Preparing your smart shopping assistant",
+        "Loading your personalized grocery recommendations",
+        "Setting up your price comparison dashboard",
+        "Initializing your savings calculator",
+        "Preparing your shopping list optimizer",
+        "Loading store location and inventory data",
+        "Setting up real-time price alerts",
+        "Preparing your grocery budget tracker",
+        "Loading nutritional information database",
+        "Initializing barcode scanning capabilities",
+        
+        // Store & Product Messages
+        "Connecting to local grocery store networks",
+        "Loading fresh produce availability",
+        "Checking dairy product prices and expiry dates",
+        "Scanning meat and poultry price comparisons",
+        "Loading bakery item freshness indicators",
+        "Comparing frozen food deals across stores",
+        "Checking pantry staples for bulk discounts",
+        "Loading organic product price comparisons",
+        "Scanning beverage deals and promotions",
+        "Checking snack and confectionery prices",
+        
+        // Savings & Deals Messages
+        "Calculating potential savings on your shopping list",
+        "Finding weekly specials and limited-time offers",
+        "Locating clearance items and markdown deals",
+        "Checking loyalty program benefits and rewards",
+        "Finding buy-one-get-one-free opportunities",
+        "Scanning for price-match guarantees",
+        "Loading cashback and rebate opportunities",
+        "Checking student and senior citizen discounts",
+        "Finding family pack savings opportunities",
+        "Locating end-of-season grocery clearances",
+        
+        // Technology & Features Messages
+        "Initializing smart price tracking algorithms",
+        "Loading machine learning price prediction models",
+        "Setting up real-time inventory synchronization",
+        "Preparing advanced search and filter options",
+        "Loading GPS-based store locator",
+        "Initializing voice search capabilities",
+        "Setting up shopping list sharing features",
+        "Loading recipe integration and meal planning",
+        "Preparing nutritional analysis tools",
+        "Initializing expense tracking and budgeting",
+        
+        // User Experience Messages
+        "Customizing your shopping preferences",
+        "Loading your favorite products and brands",
+        "Setting up dietary restriction filters",
+        "Preparing allergen information database",
+        "Loading your shopping history and patterns",
+        "Customizing store preference rankings",
+        "Setting up price drop notifications",
+        "Loading your saved shopping lists",
+        "Preparing quick reorder functionality",
+        "Initializing family account sharing",
+        
+        // Market & Competition Messages
+        "Analyzing current market prices and trends",
+        "Comparing competitor pricing strategies",
+        "Loading regional price variations",
+        "Checking supply chain impact on prices",
+        "Analyzing seasonal price fluctuations",
+        "Comparing brand vs generic product prices",
+        "Loading import vs local product comparisons",
+        "Checking wholesale vs retail price differences",
+        "Analyzing bulk purchase savings potential",
+        "Loading price history and trend analysis",
+        
+        // Convenience & Time-Saving Messages
+        "Optimizing your shopping route for efficiency",
+        "Planning the fastest grocery shopping trip",
+        "Loading store hours and peak time data",
+        "Preparing contactless shopping options",
+        "Setting up curbside pickup availability",
+        "Loading delivery service comparisons",
+        "Checking express checkout options",
+        "Preparing mobile payment integrations",
+        "Loading parking availability at stores",
+        "Setting up shopping reminder notifications",
+        
+        // Quality & Freshness Messages
+        "Checking product quality ratings and reviews",
+        "Loading freshness indicators for perishables",
+        "Comparing product ratings across stores",
+        "Checking expiration date tracking",
+        "Loading customer satisfaction scores",
+        "Comparing product origin and sourcing",
+        "Checking organic certification status",
+        "Loading fair trade product identification",
+        "Comparing local vs imported product options",
+        "Checking product recall and safety information",
+        
+        // Additional Variety Messages
+        "Preparing your grocery comparison adventure",
+        "Loading the ultimate shopping companion",
+        "Setting up your personal grocery concierge",
+        "Initializing smart shopping recommendations",
+        "Preparing your pocket-friendly shopping guide",
+        "Loading your grocery savings superhero",
+        "Setting up your intelligent shopping assistant",
+        "Preparing your budget-conscious shopping buddy",
+        "Loading your grocery deal detective",
+        "Initializing your smart spending advisor"
+    };
+    
+    private static final String[] CONNECTION_MESSAGES = {
+        "Establishing secure connection to SnapCart servers",
+        "Connecting to grocery price databases",
+        "Syncing with local store inventories",
+        "Loading real-time price updates",
+        "Connecting to deal aggregation services",
+        "Establishing link to savings calculator",
+        "Syncing with coupon databases",
+        "Connecting to store location services",
+        "Loading product comparison engines",
+        "Establishing secure payment gateways",
+        "Syncing with loyalty program networks",
+        "Connecting to nutritional databases",
+        "Loading barcode scanning services",
+        "Establishing GPS location services",
+        "Syncing with shopping list cloud storage",
+        "Connecting to recipe recommendation engines",
+        "Loading user preference synchronization",
+        "Establishing real-time inventory feeds",
+        "Syncing with price alert systems",
+        "Connecting to customer review platforms"
+    };
+    
+    private static final int[] LOADING_ICONS = {
+        R.drawable.ic_loading_cart,
+        R.drawable.ic_loading_compare,
+        R.drawable.ic_loading_search,
+        R.drawable.ic_loading_deals,
+        R.drawable.ic_loading_grocery
+    };
 
     // Request all necessary permissions for social media shopping app
     private void requestAllPermissions() {
@@ -199,6 +361,7 @@ public class MainActivity extends Activity {
         loadingText = findViewById(R.id.loading_text);
         connectionStatusText = findViewById(R.id.connection_status_text);
         connectionStatusIcon = findViewById(R.id.connection_status_icon);
+        loadingIcon = findViewById(R.id.loading_icon);
     }
     
     // Show loading screen
@@ -206,8 +369,8 @@ public class MainActivity extends Activity {
         loadingScreen.setVisibility(android.view.View.VISIBLE);
         mWebView.setVisibility(android.view.View.GONE);
         
-        // Update loading text with animation
-        updateLoadingText("Initializing Snap Cart...");
+        // Update loading text with random message
+        updateLoadingTextRandom();
         
         // Start a timer to update loading messages
         startLoadingAnimation();
@@ -226,6 +389,30 @@ public class MainActivity extends Activity {
         }
     }
     
+    // Update loading text with random message
+    private void updateLoadingTextRandom() {
+        if (loadingText != null) {
+            java.util.Random random = new java.util.Random();
+            String randomMessage = LOADING_MESSAGES[random.nextInt(LOADING_MESSAGES.length)];
+            loadingText.setText(randomMessage);
+            
+            // Also update icon randomly
+            if (loadingIcon != null) {
+                int randomIcon = LOADING_ICONS[random.nextInt(LOADING_ICONS.length)];
+                loadingIcon.setImageResource(randomIcon);
+            }
+        }
+    }
+    
+    // Update connection status with random message
+    private void updateConnectionStatusRandom() {
+        if (connectionStatusText != null) {
+            java.util.Random random = new java.util.Random();
+            String randomMessage = CONNECTION_MESSAGES[random.nextInt(CONNECTION_MESSAGES.length)];
+            connectionStatusText.setText(randomMessage);
+        }
+    }
+    
     // Update connection status
     private void updateConnectionStatus(String status, boolean isConnected) {
         if (connectionStatusText != null) {
@@ -236,16 +423,35 @@ public class MainActivity extends Activity {
         }
     }
     
-    // Start loading animation with different messages
+    // Start loading animation with randomized messages
     private void startLoadingAnimation() {
         android.os.Handler handler = new android.os.Handler();
         
-        handler.postDelayed(() -> updateLoadingText("Connecting to SnapCart ZA..."), 1000);
+        // Update messages every 1.5-2 seconds with random content
         handler.postDelayed(() -> {
-            updateLoadingText("Loading your shopping experience...");
-            updateConnectionStatus("Establishing secure connection...", true);
-        }, 2000);
-        handler.postDelayed(() -> updateConnectionStatus("Loading content...", true), 3000);
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
+        }, 1500);
+        
+        handler.postDelayed(() -> {
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
+        }, 3000);
+        
+        handler.postDelayed(() -> {
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
+        }, 4500);
+        
+        handler.postDelayed(() -> {
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
+        }, 6000);
+        
+        handler.postDelayed(() -> {
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
+        }, 7500);
     }
     
     @SuppressLint("SetJavaScriptEnabled")
@@ -332,8 +538,8 @@ public class MainActivity extends Activity {
         public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             // Update loading status when page starts loading
-            updateLoadingText("Loading page content...");
-            updateConnectionStatus("Downloading resources...", true);
+            updateLoadingTextRandom();
+            updateConnectionStatusRandom();
         }
         
         @Override
@@ -348,11 +554,11 @@ public class MainActivity extends Activity {
             // Add a small delay to ensure content is fully rendered
             android.os.Handler handler = new android.os.Handler();
             handler.postDelayed(() -> {
-                updateLoadingText("Ready!");
-                updateConnectionStatus("Connected successfully", true);
+                updateLoadingText("Welcome to SnapCart - Start comparing and saving!");
+                updateConnectionStatus("Connected successfully - Ready to find the best deals!", true);
                 
                 // Hide loading screen after a brief moment
-                handler.postDelayed(() -> hideLoadingScreen(), 500);
+                handler.postDelayed(() -> hideLoadingScreen(), 800);
             }, 1000);
         }
         
@@ -361,8 +567,8 @@ public class MainActivity extends Activity {
             super.onReceivedError(view, errorCode, description, failingUrl);
             
             // Update loading screen to show error
-            updateLoadingText("Connection error occurred");
-            updateConnectionStatus("Failed to load: " + description, false);
+            updateLoadingText("Connection issue detected - Please check your internet");
+            updateConnectionStatus("Retrying connection to SnapCart servers...", false);
             
             // Log error for debugging (production apps shouldn't show technical error details to users)
             android.util.Log.e("SnapCart", "Failed to load page: " + description + " (URL: " + failingUrl + ")");
@@ -373,8 +579,8 @@ public class MainActivity extends Activity {
             super.onReceivedHttpError(view, request, errorResponse);
             
             if (request.isForMainFrame()) {
-                updateLoadingText("Server error occurred");
-                updateConnectionStatus("HTTP Error: " + errorResponse.getStatusCode(), false);
+                updateLoadingText("Server temporarily unavailable - Please try again");
+                updateConnectionStatus("Attempting to reconnect to SnapCart...", false);
             }
         }
     }
@@ -387,19 +593,19 @@ public class MainActivity extends Activity {
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
             
-            // Update loading text based on progress
+            // Update loading text based on progress with randomized messages
             if (newProgress < 25) {
-                updateLoadingText("Connecting to server...");
-                updateConnectionStatus("Progress: " + newProgress + "%", true);
+                updateLoadingTextRandom();
+                updateConnectionStatus("Progress: " + newProgress + "% - Initializing comparison engine", true);
             } else if (newProgress < 50) {
-                updateLoadingText("Loading page resources...");
-                updateConnectionStatus("Progress: " + newProgress + "%", true);
+                updateLoadingTextRandom();
+                updateConnectionStatus("Progress: " + newProgress + "% - Loading grocery databases", true);
             } else if (newProgress < 75) {
-                updateLoadingText("Rendering content...");
-                updateConnectionStatus("Progress: " + newProgress + "%", true);
+                updateLoadingTextRandom();
+                updateConnectionStatus("Progress: " + newProgress + "% - Preparing price comparisons", true);
             } else if (newProgress < 100) {
-                updateLoadingText("Almost ready...");
-                updateConnectionStatus("Progress: " + newProgress + "%", true);
+                updateLoadingTextRandom();
+                updateConnectionStatus("Progress: " + newProgress + "% - Almost ready to save money", true);
             }
         }
         

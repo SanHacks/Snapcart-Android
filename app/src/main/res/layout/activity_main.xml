@@ -57,12 +57,21 @@
             android:indeterminate="true"
             android:layout_marginBottom="16dp" />
 
+        <!-- Loading Icon -->
+        <ImageView
+            android:id="@+id/loading_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_loading_cart"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Loading Icon" />
+
         <!-- Loading Text -->
         <TextView
             android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading your shopping experience..."
+            android:text="Preparing for shopping liftoff..."
             android:textSize="14sp"
             android:textColor="#888888"
             android:layout_marginBottom="24dp"
@@ -87,7 +96,7 @@
                 android:id="@+id/connection_status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Connecting to SnapCart ZA..."
+                android:text="Connecting to SnapCart..."
                 android:textSize="12sp"
                 android:textColor="#999999" />
 
