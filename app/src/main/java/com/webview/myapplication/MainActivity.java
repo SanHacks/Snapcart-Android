@@ -45,8 +45,8 @@ public class MainActivity extends Activity {
     private static final String LOCALHOST_URL = "http://localhost:3000";
     private static final String NETWORK_URL = "http://10.1.118.128:3000";
     private static final String NGROK_URL = "https://324d8d0f97a9.ngrok-free.app";
-    private static final String PRODUCTION_URL = "https://grocerywise-stg.laravel.cloud";
-    private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Change this to switch between environments
+    private static final String PRODUCTION_URL = "https://snapcartza.co.za";
+    private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Production URL for SnapCart ZA
 
     // Request all necessary permissions for social media shopping app
     private void requestAllPermissions() {
@@ -240,7 +240,7 @@ public class MainActivity extends Activity {
     private void startLoadingAnimation() {
         android.os.Handler handler = new android.os.Handler();
         
-        handler.postDelayed(() -> updateLoadingText("Connecting to GroceryWise..."), 1000);
+        handler.postDelayed(() -> updateLoadingText("Connecting to SnapCart ZA..."), 1000);
         handler.postDelayed(() -> {
             updateLoadingText("Loading your shopping experience...");
             updateConnectionStatus("Establishing secure connection...", true);
@@ -316,7 +316,7 @@ public class MainActivity extends Activity {
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimeType));
             DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
             dm.enqueue(request);
-            Toast.makeText(getApplicationContext(), "Download started...", Toast.LENGTH_SHORT).show();
+            // Download will show in notification bar automatically
         });
     }
 
@@ -364,8 +364,8 @@ public class MainActivity extends Activity {
             updateLoadingText("Connection error occurred");
             updateConnectionStatus("Failed to load: " + description, false);
             
-            // Show error message to user
-            Toast.makeText(MainActivity.this, "Failed to load page: " + description, Toast.LENGTH_LONG).show();
+            // Log error for debugging (production apps shouldn't show technical error details to users)
+            android.util.Log.e("SnapCart", "Failed to load page: " + description + " (URL: " + failingUrl + ")");
         }
         
         @Override
@@ -419,7 +419,7 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, FILE_CHOOSER_RESULT_CODE);
             } catch (android.content.ActivityNotFoundException e) {
                 uploadMessage = null;
-                Toast.makeText(MainActivity.this, "Cannot open file chooser", Toast.LENGTH_LONG).show();
+                android.util.Log.e("SnapCart", "Cannot open file chooser", e);
                 return false;
             }
             return true;
@@ -509,20 +509,11 @@ public class MainActivity extends Activity {
                     }
                 }
                 
-                if (deniedCount == 0) {
-                    Toast.makeText(this, "🎉 All permissions granted! Snap Cart is ready to go!", Toast.LENGTH_SHORT).show();
-                } else {
-                    String message = String.format(
-                        java.util.Locale.getDefault(),
-                        "📊 Permissions: %d granted, %d denied\n" +
-                        "⚠️ Some features may be limited without all permissions.",
-                        grantedCount, deniedCount
-                    );
-                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-                    
-                    // Show which permissions were denied for debugging
+                // Only show a simple message if some permissions are denied
+                if (deniedCount > 0) {
+                    // Log denied permissions for debugging (only in logs, not user-facing)
                     if (deniedPermissions.size() > 0) {
-                        android.util.Log.w("SnapCart", "Denied permissions: " + deniedPermissions.toString());
+                        android.util.Log.w("SnapCart", "Some permissions were denied: " + deniedPermissions.toString());
                     }
                 }
                 break;
