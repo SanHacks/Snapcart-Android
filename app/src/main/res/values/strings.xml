@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Snap Cart</string>
     <string name="app_description">Your mobile shopping companion</string>
+    
+    <!-- Widget Descriptions -->
+    <string name="shopping_list_widget_description">Quick access to your shopping list with item count and add functionality</string>
+    <string name="deals_widget_description">View current deals and hot offers with countdown timers</string>
+    <string name="cart_status_widget_description">Monitor your cart status and quick checkout access</string>
+    <string name="barcode_scanner_widget_description">Quick barcode and QR code scanner for adding products</string>
 </resources>

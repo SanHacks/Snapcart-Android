@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/barcode_scanner_widget_description"
+    android:initialKeyguardLayout="@layout/barcode_scanner_widget"
+    android:initialLayout="@layout/barcode_scanner_widget"
+    android:minWidth="250dp"
+    android:minHeight="150dp"
+    android:previewImage="@drawable/ic_scanner"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
+    android:updatePeriodMillis="3600000"
+    android:widgetCategory="home_screen" />

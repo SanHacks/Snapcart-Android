@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
+    <!-- <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" /> System apps only -->
     
     <!-- ================================= -->
     <!-- LOCATION & GEOFENCING PERMISSIONS -->
@@ -85,7 +85,7 @@
     <!-- SYSTEM & DEVICE ACCESS -->
     <!-- ========================= -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> System apps only -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -169,6 +169,11 @@
     <uses-feature 
         android:name="android.hardware.touchscreen.multitouch"
         android:required="false" />
+    
+    <!-- Telephony features for SMS/Phone permissions -->
+    <uses-feature 
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -183,13 +188,50 @@
     <activity
         android:name="com.webview.myapplication.MainActivity"
         android:configChanges="orientation|screenSize"
-        android:label="@string/app_name"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
+    
+    <!-- Widget Providers -->
+    <receiver android:name="com.webview.myapplication.ShoppingListWidget"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+        <meta-data android:name="android.appwidget.provider"
+            android:resource="@xml/shopping_list_widget_info" />
+    </receiver>
+    
+    <receiver android:name="com.webview.myapplication.DealsWidget"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+        <meta-data android:name="android.appwidget.provider"
+            android:resource="@xml/deals_widget_info" />
+    </receiver>
+    
+    <receiver android:name="com.webview.myapplication.CartStatusWidget"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+        <meta-data android:name="android.appwidget.provider"
+            android:resource="@xml/cart_status_widget_info" />
+    </receiver>
+    
+    <receiver android:name="com.webview.myapplication.BarcodeScannerWidget"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+        <meta-data android:name="android.appwidget.provider"
+            android:resource="@xml/barcode_scanner_widget_info" />
+    </receiver>
+    
     </application>
 
 

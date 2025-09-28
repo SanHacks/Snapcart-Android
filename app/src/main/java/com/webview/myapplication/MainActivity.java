@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.webkit.*;
 import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -32,11 +35,18 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri[]> uploadMessage;
     private final static int FILE_CHOOSER_RESULT_CODE = 10000;
     
+    // Loading screen components
+    private LinearLayout loadingScreen;
+    private TextView loadingText;
+    private TextView connectionStatusText;
+    private ImageView connectionStatusIcon;
+    
     // Development URLs - easily change these for different testing environments
     private static final String LOCALHOST_URL = "http://localhost:3000";
     private static final String NETWORK_URL = "http://10.1.118.128:3000";
     private static final String NGROK_URL = "https://324d8d0f97a9.ngrok-free.app";
-    private static final String DEVELOPMENT_URL = NETWORK_URL; // Change this to switch between environments
+    private static final String PRODUCTION_URL = "https://grocerywise-stg.laravel.cloud";
+    private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Change this to switch between environments
 
     // Request all necessary permissions for social media shopping app
     private void requestAllPermissions() {
@@ -163,6 +173,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // Initialize loading screen components
+        initializeLoadingScreen();
+        
         // Request all permissions needed for social media shopping app
         if (!hasAllPermissions()) {
             requestAllPermissions();
@@ -173,8 +186,66 @@ public class MainActivity extends Activity {
         
         setupWebView();
         
+        // Show loading screen and start loading
+        showLoadingScreen();
+        
         // Load the configured development URL
         mWebView.loadUrl(DEVELOPMENT_URL);
+    }
+    
+    // Initialize loading screen components
+    private void initializeLoadingScreen() {
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        connectionStatusText = findViewById(R.id.connection_status_text);
+        connectionStatusIcon = findViewById(R.id.connection_status_icon);
+    }
+    
+    // Show loading screen
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(android.view.View.VISIBLE);
+        mWebView.setVisibility(android.view.View.GONE);
+        
+        // Update loading text with animation
+        updateLoadingText("Initializing Snap Cart...");
+        
+        // Start a timer to update loading messages
+        startLoadingAnimation();
+    }
+    
+    // Hide loading screen and show WebView
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(android.view.View.GONE);
+        mWebView.setVisibility(android.view.View.VISIBLE);
+    }
+    
+    // Update loading text
+    private void updateLoadingText(String text) {
+        if (loadingText != null) {
+            loadingText.setText(text);
+        }
+    }
+    
+    // Update connection status
+    private void updateConnectionStatus(String status, boolean isConnected) {
+        if (connectionStatusText != null) {
+            connectionStatusText.setText(status);
+        }
+        if (connectionStatusIcon != null && isConnected) {
+            connectionStatusIcon.setImageResource(R.drawable.ic_wifi_connecting);
+        }
+    }
+    
+    // Start loading animation with different messages
+    private void startLoadingAnimation() {
+        android.os.Handler handler = new android.os.Handler();
+        
+        handler.postDelayed(() -> updateLoadingText("Connecting to GroceryWise..."), 1000);
+        handler.postDelayed(() -> {
+            updateLoadingText("Loading your shopping experience...");
+            updateConnectionStatus("Establishing secure connection...", true);
+        }, 2000);
+        handler.postDelayed(() -> updateConnectionStatus("Loading content...", true), 3000);
     }
     
     @SuppressLint("SetJavaScriptEnabled")
@@ -258,17 +329,79 @@ public class MainActivity extends Activity {
         }
         
         @Override
+        public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            // Update loading status when page starts loading
+            updateLoadingText("Loading page content...");
+            updateConnectionStatus("Downloading resources...", true);
+        }
+        
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            
             // Ensure cookies are saved
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().flush();
+            }
+            
+            // Add a small delay to ensure content is fully rendered
+            android.os.Handler handler = new android.os.Handler();
+            handler.postDelayed(() -> {
+                updateLoadingText("Ready!");
+                updateConnectionStatus("Connected successfully", true);
+                
+                // Hide loading screen after a brief moment
+                handler.postDelayed(() -> hideLoadingScreen(), 500);
+            }, 1000);
+        }
+        
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            
+            // Update loading screen to show error
+            updateLoadingText("Connection error occurred");
+            updateConnectionStatus("Failed to load: " + description, false);
+            
+            // Show error message to user
+            Toast.makeText(MainActivity.this, "Failed to load page: " + description, Toast.LENGTH_LONG).show();
+        }
+        
+        @Override
+        public void onReceivedHttpError(WebView view, android.webkit.WebResourceRequest request, android.webkit.WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+            
+            if (request.isForMainFrame()) {
+                updateLoadingText("Server error occurred");
+                updateConnectionStatus("HTTP Error: " + errorResponse.getStatusCode(), false);
             }
         }
     }
 
     // Custom WebChromeClient for camera, file upload, geolocation, etc.
     private class SnapCartWebChromeClient extends WebChromeClient {
+        
+        // Handle page loading progress
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+            
+            // Update loading text based on progress
+            if (newProgress < 25) {
+                updateLoadingText("Connecting to server...");
+                updateConnectionStatus("Progress: " + newProgress + "%", true);
+            } else if (newProgress < 50) {
+                updateLoadingText("Loading page resources...");
+                updateConnectionStatus("Progress: " + newProgress + "%", true);
+            } else if (newProgress < 75) {
+                updateLoadingText("Rendering content...");
+                updateConnectionStatus("Progress: " + newProgress + "%", true);
+            } else if (newProgress < 100) {
+                updateLoadingText("Almost ready...");
+                updateConnectionStatus("Progress: " + newProgress + "%", true);
+            }
+        }
         
         // Handle file uploads
         @Override
@@ -380,6 +513,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(this, "🎉 All permissions granted! Snap Cart is ready to go!", Toast.LENGTH_SHORT).show();
                 } else {
                     String message = String.format(
+                        java.util.Locale.getDefault(),
                         "📊 Permissions: %d granted, %d denied\n" +
                         "⚠️ Some features may be limited without all permissions.",
                         grantedCount, deniedCount

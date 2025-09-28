@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/cart_status_widget_description"
+    android:initialKeyguardLayout="@layout/cart_status_widget"
+    android:initialLayout="@layout/cart_status_widget"
+    android:minWidth="250dp"
+    android:minHeight="150dp"
+    android:previewImage="@drawable/ic_shopping_cart"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />
