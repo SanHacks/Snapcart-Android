@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class DealsWidget extends AppWidgetProvider {
     
-    private static final String PREFS_NAME = "SnapCartDealsPrefs";
+    private static final String PREFS_NAME = "SharpSavingsDealsPrefs";
     private static final String ACTION_REFRESH_DEALS = "com.webview.myapplication.REFRESH_DEALS";
     private static final String ACTION_OPEN_DEALS = "com.webview.myapplication.OPEN_DEALS";
     

@@ -16,7 +16,7 @@ import java.util.Locale;
  */
 public class BarcodeScannerWidget extends AppWidgetProvider {
     
-    private static final String PREFS_NAME = "SnapCartScannerPrefs";
+    private static final String PREFS_NAME = "SharpSavingsScannerPrefs";
     private static final String PREF_LAST_SCAN = "last_scan_product";
     private static final String PREF_SCAN_COUNT = "scan_count";
     private static final String ACTION_SCAN_BARCODE = "com.webview.myapplication.SCAN_BARCODE";

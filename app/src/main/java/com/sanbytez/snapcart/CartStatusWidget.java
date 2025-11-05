@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class CartStatusWidget extends AppWidgetProvider {
     
-    private static final String PREFS_NAME = "SnapCartStatusPrefs";
+    private static final String PREFS_NAME = "SharpSavingsStatusPrefs";
     private static final String PREF_CART_ITEMS = "cart_items";
     private static final String PREF_CART_TOTAL = "cart_total";
     private static final String ACTION_OPEN_CART = "com.webview.myapplication.OPEN_CART";

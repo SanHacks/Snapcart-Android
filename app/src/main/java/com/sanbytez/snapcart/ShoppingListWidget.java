@@ -16,7 +16,7 @@ import java.util.Locale;
  */
 public class ShoppingListWidget extends AppWidgetProvider {
     
-    private static final String PREFS_NAME = "SnapCartWidgetPrefs";
+    private static final String PREFS_NAME = "SharpSavingsWidgetPrefs";
     private static final String PREF_ITEM_COUNT = "shopping_list_count";
     private static final String ACTION_ADD_ITEM = "com.webview.myapplication.ADD_ITEM";
     private static final String ACTION_OPEN_APP = "com.webview.myapplication.OPEN_APP";

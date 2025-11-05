@@ -46,17 +46,17 @@ public class MainActivity extends Activity {
     private static final String LOCALHOST_URL = "http://localhost:3000";
     private static final String NETWORK_URL = "http://10.1.118.128:3000";
     private static final String NGROK_URL = "https://324d8d0f97a9.ngrok-free.app";
-    private static final String PRODUCTION_URL = "https://snapcartza.co.za";
-    private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Production URL for SnapCart ZA
+    private static final String PRODUCTION_URL = "https://sharpsavings.online";
+    private static final String DEVELOPMENT_URL = PRODUCTION_URL; // Production URL for Sharp Savings
     
     // 100+ Randomized Loading Messages - Grocery Comparison Theme
     private static final String[] LOADING_MESSAGES = {
-        // SnapCart Brand Messages
-        "Welcome to SnapCart - where grocery comparison begins",
-        "SnapCart is scanning the best grocery deals",
-        "Connecting to SnapCart's price comparison engine",
-        "SnapCart is preparing your personalized shopping experience",
-        "Loading SnapCart's smart grocery comparison tools",
+        // Sharp Savings Brand Messages
+        "Welcome to Sharp Savings - where grocery comparison begins",
+        "Sharp Savings is scanning the best grocery deals",
+        "Connecting to Sharp Savings' price comparison engine",
+        "Sharp Savings is preparing your personalized shopping experience",
+        "Loading Sharp Savings' smart grocery comparison tools",
         
         // Grocery Comparison Core Messages
         "Comparing grocery prices across multiple stores",
@@ -180,7 +180,7 @@ public class MainActivity extends Activity {
     };
     
     private static final String[] CONNECTION_MESSAGES = {
-        "Establishing secure connection to SnapCart servers",
+        "Establishing secure connection to Sharp Savings servers",
         "Connecting to grocery price databases",
         "Syncing with local store inventories",
         "Loading real-time price updates",
@@ -492,7 +492,7 @@ public class MainActivity extends Activity {
         }
         
         // User agent for better compatibility
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " SnapCart/1.0");
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " SharpSavings/1.0");
         
         // Cache settings for better performance
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -505,8 +505,8 @@ public class MainActivity extends Activity {
         }
         
         // Set custom WebView client and chrome client
-        mWebView.setWebViewClient(new SnapCartWebViewClient());
-        mWebView.setWebChromeClient(new SnapCartWebChromeClient());
+        mWebView.setWebViewClient(new SharpSavingsWebViewClient());
+        mWebView.setWebChromeClient(new SharpSavingsWebChromeClient());
         
         // Download listener
         mWebView.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) -> {
@@ -515,7 +515,7 @@ public class MainActivity extends Activity {
             String cookies = CookieManager.getInstance().getCookie(url);
             request.addRequestHeader("cookie", cookies);
             request.addRequestHeader("User-Agent", userAgent);
-            request.setDescription("Downloading from Snap Cart...");
+            request.setDescription("Downloading from Sharp Savings...");
             request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType));
             request.allowScanningByMediaScanner();
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -526,8 +526,8 @@ public class MainActivity extends Activity {
         });
     }
 
-    // Custom WebViewClient for Snap Cart
-    private class SnapCartWebViewClient extends WebViewClient {
+    // Custom WebViewClient for Sharp Savings
+    private class SharpSavingsWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
@@ -554,7 +554,7 @@ public class MainActivity extends Activity {
             // Add a small delay to ensure content is fully rendered
             android.os.Handler handler = new android.os.Handler();
             handler.postDelayed(() -> {
-                updateLoadingText("Welcome to SnapCart - Start comparing and saving!");
+                updateLoadingText("Welcome to Sharp Savings - Start comparing and saving!");
                 updateConnectionStatus("Connected successfully - Ready to find the best deals!", true);
                 
                 // Hide loading screen after a brief moment
@@ -568,10 +568,10 @@ public class MainActivity extends Activity {
             
             // Update loading screen to show error
             updateLoadingText("Connection issue detected - Please check your internet");
-            updateConnectionStatus("Retrying connection to SnapCart servers...", false);
+            updateConnectionStatus("Retrying connection to Sharp Savings servers...", false);
             
             // Log error for debugging (production apps shouldn't show technical error details to users)
-            android.util.Log.e("SnapCart", "Failed to load page: " + description + " (URL: " + failingUrl + ")");
+            android.util.Log.e("SharpSavings", "Failed to load page: " + description + " (URL: " + failingUrl + ")");
         }
         
         @Override
@@ -580,13 +580,13 @@ public class MainActivity extends Activity {
             
             if (request.isForMainFrame()) {
                 updateLoadingText("Server temporarily unavailable - Please try again");
-                updateConnectionStatus("Attempting to reconnect to SnapCart...", false);
+                updateConnectionStatus("Attempting to reconnect to Sharp Savings...", false);
             }
         }
     }
 
     // Custom WebChromeClient for camera, file upload, geolocation, etc.
-    private class SnapCartWebChromeClient extends WebChromeClient {
+    private class SharpSavingsWebChromeClient extends WebChromeClient {
         
         // Handle page loading progress
         @Override
@@ -625,7 +625,7 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, FILE_CHOOSER_RESULT_CODE);
             } catch (android.content.ActivityNotFoundException e) {
                 uploadMessage = null;
-                android.util.Log.e("SnapCart", "Cannot open file chooser", e);
+                android.util.Log.e("SharpSavings", "Cannot open file chooser", e);
                 return false;
             }
             return true;
@@ -649,7 +649,7 @@ public class MainActivity extends Activity {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
             new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Snap Cart")
+                .setTitle("Sharp Savings")
                 .setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> result.confirm())
                 .setCancelable(false)
@@ -662,7 +662,7 @@ public class MainActivity extends Activity {
         @Override
         public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
             new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Snap Cart")
+                .setTitle("Sharp Savings")
                 .setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> result.confirm())
                 .setNegativeButton("Cancel", (dialog, which) -> result.cancel())
@@ -719,7 +719,7 @@ public class MainActivity extends Activity {
                 if (deniedCount > 0) {
                     // Log denied permissions for debugging (only in logs, not user-facing)
                     if (deniedPermissions.size() > 0) {
-                        android.util.Log.w("SnapCart", "Some permissions were denied: " + deniedPermissions.toString());
+                        android.util.Log.w("SharpSavings", "Some permissions were denied: " + deniedPermissions.toString());
                     }
                 }
                 break;
